@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EcoReward — User Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        :root {
+            --green: #1a7a4a;
+            --green-light: #e8f5ee;
+            --green-mid: #2ea86a;
+            --green-pale: #f0faf4;
+            --amber: #d4840a;
+            --amber-light: #fff7e6;
+            --dark: #0f1a14;
+            --dark2: #1c2b22;
+            --dark3: #253320;
+            --text: #1a2e1f;
+            --text2: #4a6355;
+            --text3: #7a9486;
+            --border: #d4e8db;
+            --bg: #f7fdf9;
+            --white: #ffffff;
+            --red: #c0392b;
+            --blue: #2563eb;
+            --radius: 14px;
+            --radius-sm: 8px;
+            --shadow: 0 2px 12px rgba(26, 122, 74, 0.08);
+            --shadow-lg: 0 8px 40px rgba(26, 122, 74, 0.15)
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Inter', sans-serif
+        }
+
+        .auth-screen {
+            display: none;
+            min-height: 100vh;
+            align-items: stretch
+        }
+
+        .auth-screen.active {
+            display: flex
+        }
+
+        .auth-left {
+            width: 420px;
+            flex-shrink: 0;
+            background: var(--dark2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 48px 44px;
+            position: relative;
+            overflow: hidden
+        }
+
+        .auth-left::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(46, 168, 106, 0.25), transparent 70%)
+        }
+
+        .auth-left::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: -60px;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(46, 168, 106, 0.15), transparent 70%)
+        }
+
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1;
+            position: relative
+        }
+
+        .auth-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--green-mid);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px
+        }
+
+        .auth-logo-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff
+        }
+
+        .auth-left-body {
+            z-index: 1;
+            position: relative
+        }
+
+        .auth-left-body h2 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+            margin-bottom: 16px
+        }
+
+        .auth-left-body p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 15px;
+            line-height: 1.6
+        }
+
+        .auth-stats {
+            display: flex;
+            gap: 24px;
+            z-index: 1;
+            position: relative
+        }
+
+        .auth-stat .num {
+            font-family: 'Inter', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--green-mid)
+        }
+
+        .auth-stat .lbl {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 2px
+        }
+
+        .auth-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 420px
+        }
+
+        .auth-card h3 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 6px
+        }
+
+        .auth-card .sub {
+            color: var(--text2);
+            font-size: 14px;
+            margin-bottom: 32px
+        }
+
+        .form-group {
+            margin-bottom: 18px
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text2);
+            margin-bottom: 6px
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--white);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--text);
+            transition: border-color 0.2s;
+            outline: none
+        }
+
+        .form-group input:focus {
+            border-color: var(--green-mid);
+            box-shadow: 0 0 0 3px rgba(46, 168, 106, 0.12)
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 13px;
+            background: var(--green);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s
+        }
+
+        .btn-primary:hover {
+            background: var(--green-mid)
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text2)
+        }
+
+        .auth-switch a {
+            color: var(--green);
+            font-weight: 500;
+            cursor: pointer
+        }
+
+        .error-msg {
+            background: #fef2f2;
+            color: var(--red);
+            border: 1px solid #fecaca;
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none
+        }
+
+        #dashboard {
+            display: none;
+            min-height: 100vh;
+            flex-direction: column
+        }
+
+        #dashboard.active {
+            display: flex
+        }
+
+        .topbar {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100
+        }
+
+        .topbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .topbar-logo-icon {
+            width: 34px;
+            height: 34px;
+            background: var(--green);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px
+        }
+
+        .topbar-logo-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text)
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px
+        }
+
+        .notif-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--green-light);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            position: relative
+        }
+
+        .notif-dot {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 8px;
+            height: 8px;
+            background: #e74c3c;
+            border-radius: 50%;
+            border: 2px solid #fff
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px 6px 8px;
+            background: var(--green-pale);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            cursor: pointer
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            background: var(--green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff
+        }
+
+        .user-pill span {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text)
+        }
+
+        .logout-btn {
+            padding: 7px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: var(--text2);
+            cursor: pointer
+        }
+
+        .logout-btn:hover {
+            background: var(--green-light);
+            color: var(--green)
+        }
+
+        .dash-body {
+            display: flex;
+            flex: 1
+        }
+
+        .sidebar {
+            width: 220px;
+            flex-shrink: 0;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            padding: 24px 0
+        }
+
+        .nav-section-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0 20px;
+            margin-bottom: 4px
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            font-size: 14px;
+            color: var(--text2);
+            cursor: pointer;
+            transition: all 0.15s;
+            border-left: 3px solid transparent;
+            margin-bottom: 2px
+        }
+
+        .nav-item:hover {
+            background: var(--green-pale);
+            color: var(--green)
+        }
+
+        .nav-item.active {
+            background: var(--green-light);
+            color: var(--green);
+            border-left-color: var(--green);
+            font-weight: 500
+        }
+
+        .nav-item .icon {
+            font-size: 17px;
+            width: 20px;
+            text-align: center
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto
+        }
+
+        .page {
+            display: none
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.25s ease
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--dark2), var(--dark3));
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden
+        }
+
+        .welcome-banner::after {
+            content: '♻';
+            position: absolute;
+            right: 32px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 80px;
+            opacity: 0.08
+        }
+
+        .welcome-banner h2 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 4px
+        }
+
+        .welcome-banner p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px
+        }
+
+        .points-highlight {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            background: rgba(46, 168, 106, 0.2);
+            border: 1px solid rgba(46, 168, 106, 0.3);
+            border-radius: 20px;
+            padding: 8px 16px
+        }
+
+        .points-highlight .pts {
+            font-family: 'Inter', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--green-mid)
+        }
+
+        .points-highlight span {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7)
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 28px
+        }
+
+        .stat-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: box-shadow 0.2s
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--shadow)
+        }
+
+        .stat-card .icon-wrap {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 12px
+        }
+
+        .stat-card .val {
+            font-family: 'Inter', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 2px
+        }
+
+        .stat-card .lbl {
+            font-size: 12px;
+            color: var(--text3)
+        }
+
+        .stat-card .delta {
+            font-size: 12px;
+            margin-top: 6px
+        }
+
+        .delta.up {
+            color: #16a34a
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px
+        }
+
+        .card-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text)
+        }
+
+        .card-header .see-all {
+            font-size: 13px;
+            color: var(--green);
+            cursor: pointer
+        }
+
+        .deposit-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .deposit-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: var(--bg);
+            border-radius: var(--radius-sm)
+        }
+
+        .dep-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0
+        }
+
+        .dep-info {
+            flex: 1
+        }
+
+        .dep-info .name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text)
+        }
+
+        .dep-info .time {
+            font-size: 11px;
+            color: var(--text3);
+            margin-top: 2px
+        }
+
+        .dep-pts {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--green)
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 120px;
+            padding-top: 8px
+        }
+
+        .bar-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px
+        }
+
+        .bar {
+            width: 100%;
+            background: var(--green-mid);
+            border-radius: 4px 4px 0 0;
+            cursor: pointer
+        }
+
+        .bar:hover {
+            opacity: 0.8
+        }
+
+        .bar-col .day {
+            font-size: 10px;
+            color: var(--text3)
+        }
+
+        .bins-map-placeholder {
+            background: linear-gradient(135deg, #e8f5ee, #d4edd9);
+            border-radius: var(--radius);
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border)
+        }
+
+        .map-pin {
+            position: absolute;
+            cursor: pointer;
+            transform: translate(-50%, -100%)
+        }
+
+        .pin-body {
+            width: 32px;
+            height: 40px;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2)
+        }
+
+        .pin-inner {
+            transform: rotate(45deg);
+            font-size: 14px
+        }
+
+        .map-label {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            white-space: nowrap;
+            color: var(--text2);
+            font-weight: 500
+        }
+
+        .bins-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px
+        }
+
+        .bin-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px
+        }
+
+        .bin-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px
+        }
+
+        .bin-addr {
+            font-size: 11px;
+            color: var(--text3);
+            margin-bottom: 12px
+        }
+
+        .fill-bar {
+            background: var(--border);
+            border-radius: 4px;
+            height: 8px;
+            margin-bottom: 6px
+        }
+
+        .fill-inner {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s
+        }
+
+        .fill-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text2)
+        }
+
+        .rewards-hero {
+            background: linear-gradient(135deg, #1a7a4a, #0f5233);
+            border-radius: var(--radius);
+            padding: 28px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .rewards-hero-text h2 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #fff
+        }
+
+        .rewards-hero-text p {
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 14px;
+            margin-top: 4px
+        }
+
+        .big-pts {
+            font-family: 'Inter', sans-serif;
+            font-size: 56px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1
+        }
+
+        .vouchers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 24px
+        }
+
+        .voucher {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s
+        }
+
+        .voucher:hover {
+            border-color: var(--green-mid);
+            box-shadow: var(--shadow)
+        }
+
+        .voucher .vicon {
+            font-size: 32px;
+            margin-bottom: 10px
+        }
+
+        .voucher .vname {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px
+        }
+
+        .voucher .vcost {
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--green)
+        }
+
+        .voucher .vsub {
+            font-size: 11px;
+            color: var(--text3)
+        }
+
+        .redeem-btn {
+            margin-top: 12px;
+            width: 100%;
+            padding: 8px;
+            background: var(--green-light);
+            color: var(--green);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer
+        }
+
+        .redeem-btn:hover {
+            background: var(--green);
+            color: #fff
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 28px;
+            padding: 24px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius)
+        }
+
+        .profile-avatar {
+            width: 72px;
+            height: 72px;
+            background: var(--green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0
+        }
+
+        .profile-info h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text)
+        }
+
+        .profile-info p {
+            font-size: 13px;
+            color: var(--text2);
+            margin-top: 2px
+        }
+
+        .profile-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            background: var(--green-light);
+            color: var(--green);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px
+        }
+
+        .profile-field {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px
+        }
+
+        .profile-field label {
+            font-size: 11px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            display: block;
+            margin-bottom: 4px
+        }
+
+        .profile-field .val {
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 500
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        .history-table th {
+            text-align: left;
+            padding: 10px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .history-table td {
+            padding: 12px 14px;
+            font-size: 13px;
+            color: var(--text);
+            border-bottom: 1px solid var(--border)
+        }
+
+        .history-table tr:last-child td {
+            border-bottom: none
+        }
+
+        .history-table tr:hover td {
+            background: var(--bg)
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500
+        }
+
+        .type-organic {
+            background: #dcfce7;
+            color: #166534
+        }
+
+        .type-plastic {
+            background: #dbeafe;
+            color: #1d4ed8
+        }
+
+        .type-paper {
+            background: #fef9c3;
+            color: #92400e
+        }
+
+        .type-metal {
+            background: #e0e7ff;
+            color: #3730a3
+        }
+
+        .type-ewaste {
+            background: #fce7f3;
+            color: #9d174d
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--dark2);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-screen active" id="login-screen">
+        <div class="auth-left">
+            <div class="auth-logo">
+                <div class="auth-logo-icon">♻</div>
+                <div class="auth-logo-name">EcoReward</div>
+            </div>
+            <div class="auth-left-body">
+                <h2>Turn waste into rewards</h2>
+                <p>Deposit your waste at smart bins, earn points, and redeem exciting vouchers while helping your
+                    community go green.</p>
+            </div>
+            <div class="auth-stats">
+                <div class="auth-stat">
+                    <div class="num">12K+</div>
+                    <div class="lbl">Users</div>
+                </div>
+                <div class="auth-stat">
+                    <div class="num">480</div>
+                    <div class="lbl">Smart bins</div>
+                </div>
+                <div class="auth-stat">
+                    <div class="num">98t</div>
+                    <div class="lbl">Recycled</div>
+                </div>
+            </div>
+        </div>
+        <div class="auth-right">
+            <div class="auth-card">
+                <h3>Welcome back</h3>
+                <p class="sub">Sign in to your EcoReward account</p>
+                <div class="error-msg" id="login-error">Invalid credentials. Use: user@eco.com / password</div>
+                <div class="form-group"><label>Email address</label><input type="email" id="login-email"
+                        placeholder="you@example.com" value="user@eco.com" /></div>
+                <div class="form-group"><label>Password</label><input type="password" id="login-pass"
+                        placeholder="••••••••" value="password" /></div>
+                <button class="btn-primary" onclick="doLogin()">Sign in</button>
+                <div class="auth-switch">No account? <a onclick="showScreen('signup-screen')">Create one free</a></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-screen" id="signup-screen">
+        <div class="auth-left">
+            <div class="auth-logo">
+                <div class="auth-logo-icon">♻</div>
+                <div class="auth-logo-name">EcoReward</div>
+            </div>
+            <div class="auth-left-body">
+                <h2>Join the green movement</h2>
+                <p>Sign up today and start earning points for every kilo of waste you deposit responsibly.</p>
+            </div>
+            <div class="auth-stats">
+                <div class="auth-stat">
+                    <div class="num">2pts</div>
+                    <div class="lbl">per 100g</div>
+                </div>
+                <div class="auth-stat">
+                    <div class="num">5x</div>
+                    <div class="lbl">Bonus on plastics</div>
+                </div>
+                <div class="auth-stat">
+                    <div class="num">Free</div>
+                    <div class="lbl">First voucher</div>
+                </div>
+            </div>
+        </div>
+        <div class="auth-right">
+            <div class="auth-card">
+                <h3>Create account</h3>
+                <p class="sub">Join EcoReward and start making an impact</p>
+                <div class="form-row">
+                    <div class="form-group"><label>First name</label><input type="text" placeholder="Alex" /></div>
+                    <div class="form-group"><label>Last name</label><input type="text" placeholder="Smith" /></div>
+                </div>
+                <div class="form-group"><label>Email address</label><input type="email" placeholder="you@example.com" />
+                </div>
+                <div class="form-group"><label>Phone number</label><input type="tel" placeholder="+91 98765 43210" />
+                </div>
+                <div class="form-group"><label>Community / Apartment</label><input type="text"
+                        placeholder="Green Valley Apartments" /></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••" />
+                    </div>
+                    <div class="form-group"><label>Confirm</label><input type="password" placeholder="••••••••" /></div>
+                </div>
+                <button class="btn-primary" onclick="doSignup()">Create my account</button>
+                <div class="auth-switch">Already registered? <a onclick="showScreen('login-screen')">Sign in</a></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard">
+        <div class="topbar">
+            <div class="topbar-logo">
+                <div class="topbar-logo-icon">♻</div>
+                <div class="topbar-logo-name">EcoReward</div>
+            </div>
+            <div class="topbar-right">
+                <button class="notif-btn" onclick="showToast('🔔 3 new notifications')">🔔<div class="notif-dot"></div>
+                </button>
+                <div class="user-pill">
+                    <div class="user-avatar" id="dash-avatar">AR</div><span id="dash-username">Alex R.</span>
+                </div>
+                <button class="logout-btn" onclick="doLogout()">Logout</button>
+            </div>
+        </div>
+        <div class="dash-body">
+            <div class="sidebar">
+                <div style="margin-bottom:16px">
+                    <div class="nav-section-label">Main</div>
+                    <div class="nav-item active" onclick="showPage('home',this)"><span class="icon">🏠</span>Dashboard
+                    </div>
+                    <div class="nav-item" onclick="showPage('bins',this)"><span class="icon">🗑️</span>Nearby Bins</div>
+                    <div class="nav-item" onclick="showPage('deposit',this)"><span class="icon">⚖️</span>Deposit Waste
+                    </div>
+                    <div class="nav-item" onclick="showPage('history',this)"><span class="icon">📋</span>History</div>
+                </div>
+                <div style="margin-bottom:16px">
+                    <div class="nav-section-label">Rewards</div>
+                    <div class="nav-item" onclick="showPage('rewards',this)"><span class="icon">🎁</span>My Rewards
+                    </div>
+                    <div class="nav-item" onclick="showPage('leaderboard',this)"><span class="icon">🏆</span>Leaderboard
+                    </div>
+                </div>
+                <div>
+                    <div class="nav-section-label">Account</div>
+                    <div class="nav-item" onclick="showPage('profile',this)"><span class="icon">👤</span>Profile</div>
+                    <div class="nav-item" onclick="showPage('settings',this)"><span class="icon">⚙️</span>Settings</div>
+                </div>
+            </div>
+            <div class="main-content">
+
+                <div class="page active" id="page-home">
+                    <div class="welcome-banner">
+                        <div>
+                            <h2 id="welcome-name">Good morning, Alex! 👋</h2>
+                            <p>You are in the top 12% of contributors this month. Keep it up!</p>
+                            <div class="points-highlight"><span class="pts" id="total-pts">2,840</span><span>reward
+                                    points available</span></div>
+                        </div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="icon-wrap" style="background:#dcfce7">♻</div>
+                            <div class="val">47.2 kg</div>
+                            <div class="lbl">Total waste deposited</div>
+                            <div class="delta up">↑ 6.4 kg this month</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon-wrap" style="background:#e0e7ff">⭐</div>
+                            <div class="val">2,840</div>
+                            <div class="lbl">Points earned</div>
+                            <div class="delta up">↑ 320 this week</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon-wrap" style="background:#fff7ed">🎁</div>
+                            <div class="val">6</div>
+                            <div class="lbl">Vouchers redeemed</div>
+                            <div class="delta up">↑ 2 this month</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon-wrap" style="background:#fef9c3">🌱</div>
+                            <div class="val">23.1 kg</div>
+                            <div class="lbl">CO₂ saved</div>
+                            <div class="delta up">↑ 3.2 kg this month</div>
+                        </div>
+                    </div>
+
+                    <div class="card"
+                        style="margin-bottom: 24px; padding: 0; overflow: hidden; border: 1px solid var(--border);">
+                        <div
+                            style="padding: 16px 20px; border-bottom: 1px solid var(--border); background: var(--white); display:flex; justify-content:space-between; align-items:center;">
+                            <h3 style="font-size: 16px; font-weight: 700; margin:0;">Nearby Smart Bins</h3>
+                            <span
+                                style="font-size: 12px; color: var(--green); font-weight: 600; background:rgba(34, 197, 94, 0.1); padding:2px 8px; border-radius:10px;">Live
+                                OS Map</span>
+                        </div>
+                        <div class="bins-map-placeholder" style="width: 100%; height: 280px; z-index: 1;"></div>
+                    </div>
+
+                    <div class="two-col">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Weekly deposits</h3>
+                            </div>
+                            <div class="bar-chart">
+                                <div class="bar-col">
+                                    <div class="bar" style="height:45%"></div>
+                                    <div class="day">Mon</div>
+                                </div>
+                                <div class="bar-col">
+                                    <div class="bar" style="height:70%"></div>
+                                    <div class="day">Tue</div>
+                                </div>
+                                <div class="bar-col">
+                                    <div class="bar" style="height:55%"></div>
+                                    <div class="day">Wed</div>
+                                </div>
+                                <div class="bar-col">
+                                    <div class="bar" style="height:90%"></div>
+                                    <div class="day">Thu</div>
+                                </div>
+                                <div class="bar-col">
+                                    <div class="bar" style="height:60%"></div>
+                                    <div class="day">Fri</div>
+                                </div>
+                                <div class="bar-col">
+                                    <div class="bar" style="height:35%"></div>
+                                    <div class="day">Sat</div>
+                                </div>
+                                <div class="bar-col">
+                                    <div class="bar" style="height:80%"></div>
+                                    <div class="day">Sun</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Recent deposits</h3><span class="see-all" onclick="showPage('history',null)">See
+                                    all</span>
+                            </div>
+                            <div class="deposit-list">
+                                <div class="deposit-item">
+                                    <div class="dep-icon" style="background:#dcfce7">🥬</div>
+                                    <div class="dep-info">
+                                        <div class="name">Organic waste — Bin A12</div>
+                                        <div class="time">Today, 9:14 AM · 1.2 kg</div>
+                                    </div>
+                                    <div class="dep-pts">+24 pts</div>
+                                </div>
+                                <div class="deposit-item">
+                                    <div class="dep-icon" style="background:#dbeafe">🧴</div>
+                                    <div class="dep-info">
+                                        <div class="name">Plastic bottles — Bin B04</div>
+                                        <div class="time">Yesterday · 0.8 kg</div>
+                                    </div>
+                                    <div class="dep-pts">+40 pts</div>
+                                </div>
+                                <div class="deposit-item">
+                                    <div class="dep-icon" style="background:#fef9c3">📰</div>
+                                    <div class="dep-info">
+                                        <div class="name">Paper & cardboard — Bin A12</div>
+                                        <div class="time">Mon · 2.1 kg</div>
+                                    </div>
+                                    <div class="dep-pts">+42 pts</div>
+                                </div>
+                                <div class="deposit-item">
+                                    <div class="dep-icon" style="background:#e0e7ff">📱</div>
+                                    <div class="dep-info">
+                                        <div class="name">E-waste — Bin C01</div>
+                                        <div class="time">Fri · 0.5 kg</div>
+                                    </div>
+                                    <div class="dep-pts">+75 pts</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page" id="page-bins">
+                    <div style="margin-bottom:20px">
+                        <h2 style="font-size:22px;font-weight:700">Nearby smart bins</h2>
+                        <p style="font-size:13px;color:var(--text2);margin-top:4px">4 bins within 500m of your location
+                        </p>
+                    </div>
+                    <div class="bins-map-placeholder">
+                        <div class="map-pin" style="left:30%;top:40%">
+                            <div class="pin-body" style="background:#22c55e">
+                                <div class="pin-inner">🗑</div>
+                            </div>
+                            <div class="map-label">Bin A12</div>
+                        </div>
+                        <div class="map-pin" style="left:55%;top:55%">
+                            <div class="pin-body" style="background:#f59e0b">
+                                <div class="pin-inner">🗑</div>
+                            </div>
+                            <div class="map-label">Bin B04</div>
+                        </div>
+                        <div class="map-pin" style="left:70%;top:35%">
+                            <div class="pin-body" style="background:#ef4444">
+                                <div class="pin-inner">🗑</div>
+                            </div>
+                            <div class="map-label">Bin C01</div>
+                        </div>
+                        <div class="map-pin" style="left:45%;top:25%">
+                            <div class="pin-body" style="background:#22c55e">
+                                <div class="pin-inner">🗑</div>
+                            </div>
+                            <div class="map-label">Bin D07</div>
+                        </div>
+                        <div
+                            style="text-align:center;z-index:1;position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:12px;color:var(--text2)">
+                            🟢 Available &nbsp;🟡 Filling &nbsp;🔴 Full</div>
+                    </div>
+                    <div class="bins-grid">
+                        <div class="bin-card">
+                            <div class="bin-name">Bin A12 — Block A Gate</div>
+                            <div class="bin-addr">📍 80m away</div>
+                            <div class="fill-bar">
+                                <div class="fill-inner" style="width:35%;background:#22c55e"></div>
+                            </div>
+                            <div class="fill-label"><span>Fill level</span><span>35%</span></div>
+                            <div style="margin-top:10px;font-size:12px;color:var(--text2)">🥬 Organic &nbsp;📰 Paper
+                                &nbsp;🧴 Plastic</div>
+                        </div>
+                        <div class="bin-card">
+                            <div class="bin-name">Bin B04 — Clubhouse</div>
+                            <div class="bin-addr">📍 210m away</div>
+                            <div class="fill-bar">
+                                <div class="fill-inner" style="width:72%;background:#f59e0b"></div>
+                            </div>
+                            <div class="fill-label"><span>Fill level</span><span style="color:#f59e0b">72%</span></div>
+                            <div style="margin-top:10px;font-size:12px;color:var(--text2)">🥬 Organic &nbsp;🧴 Plastic
+                                &nbsp;🔩 Metal</div>
+                        </div>
+                        <div class="bin-card">
+                            <div class="bin-name">Bin C01 — East Gate</div>
+                            <div class="bin-addr">📍 340m away</div>
+                            <div class="fill-bar">
+                                <div class="fill-inner" style="width:91%;background:#ef4444"></div>
+                            </div>
+                            <div class="fill-label"><span>Fill level</span><span
+                                    style="color:#ef4444;font-weight:600">91% — Full!</span></div>
+                            <div style="margin-top:10px;font-size:12px;color:var(--text2)">📱 E-waste &nbsp;🔩 Metal
+                            </div>
+                        </div>
+                        <div class="bin-card">
+                            <div class="bin-name">Bin D07 — Central Park</div>
+                            <div class="bin-addr">📍 480m away</div>
+                            <div class="fill-bar">
+                                <div class="fill-inner" style="width:20%;background:#22c55e"></div>
+                            </div>
+                            <div class="fill-label"><span>Fill level</span><span>20%</span></div>
+                            <div style="margin-top:10px;font-size:12px;color:var(--text2)">🥬 Organic &nbsp;📰 Paper
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page" id="page-deposit">
+                    <div style="margin-bottom:20px">
+                        <h2 style="font-size:22px;font-weight:700">Deposit waste</h2>
+                        <p style="font-size:13px;color:var(--text2);margin-top:4px">Scan a Smart Bin to unlock and begin
+                            your deposit</p>
+                    </div>
+
+                    <div id="qr-reader-container" class="card"
+                        style="max-width:520px; padding: 20px; text-align:center; border: 2px dashed var(--green); background: rgba(34, 197, 94, 0.03);">
+                        <div id="reader"
+                            style="width:100%; margin-bottom:16px; border:none; border-radius:10px; overflow:hidden;">
+                        </div>
+                        <div id="scanner-idle-state">
+                            <div style="font-size: 48px; margin-bottom: 16px;">📷</div>
+                            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">Scan Waste Payload QR
+                            </h3>
+                            <p style="color:var(--text2); font-size:14px; margin-bottom:24px; line-height: 1.5;">
+                                Hold the generated Smart Bag payload QR up to your webcam to seamlessly record the
+                                deposit and sync your points instantly.
+                            </p>
+                            <button id="start-scan-btn" class="btn-primary" style="width:auto; padding:0 30px;"
+                                onclick="startRealScanner()">Turn on Web Camera</button>
+                            <button id="cancel-scan-btn" class="btn-secondary"
+                                style="display:none; margin-top:12px;width:100%;background:transparent;border:none;color:var(--text2);cursor:pointer;font-weight:600;"
+                                onclick="stopRealScanner()">Cancel Scanning</button>
+                        </div>
+                    </div>
+
+                    <div id="deposit-success-step" class="card"
+                        style="max-width:520px; display:none; text-align:center; padding: 40px 20px; border: 2px solid var(--green); background: rgba(34, 197, 94, 0.05);">
+                        <div style="font-size: 64px; margin-bottom: 16px;">🎊</div>
+                        <h3 style="font-size: 22px; font-weight: 700; margin-bottom: 8px; color:var(--green);">Deposit
+                            Logged Automatically!</h3>
+                        <p
+                            style="color:var(--text); font-size:15px; margin-bottom:12px; line-height: 1.5; font-weight:600;">
+                            <span id="success-details"></span>
+                        </p>
+                        <div style="font-size: 24px; font-weight: 800; color: #f59e0b; margin-bottom: 24px;">
+                            + <span id="success-pts">30</span> EcoPoints
+                        </div>
+                        <button class="btn-primary" style="width:auto; padding:0 30px;" onclick="resetScannerUI()">Scan
+                            Another Bag</button>
+                    </div>
+                </div>
+
+                <div class="page" id="page-history">
+                    <div style="margin-bottom:20px">
+                        <h2 style="font-size:22px;font-weight:700">Deposit history</h2>
+                    </div>
+                    <div class="card" style="padding:0;overflow:hidden">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Bin</th>
+                                    <th>Waste type</th>
+                                    <th>Weight</th>
+                                    <th>Points</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Jul 10, 2025</td>
+                                    <td>Bin A12</td>
+                                    <td><span class="type-badge type-organic">Organic</span></td>
+                                    <td>1.2 kg</td>
+                                    <td style="font-weight:600;color:var(--green)">+24 pts</td>
+                                </tr>
+                                <tr>
+                                    <td>Jul 9, 2025</td>
+                                    <td>Bin B04</td>
+                                    <td><span class="type-badge type-plastic">Plastic</span></td>
+                                    <td>0.8 kg</td>
+                                    <td style="font-weight:600;color:var(--green)">+40 pts</td>
+                                </tr>
+                                <tr>
+                                    <td>Jul 7, 2025</td>
+                                    <td>Bin A12</td>
+                                    <td><span class="type-badge type-paper">Paper</span></td>
+                                    <td>2.1 kg</td>
+                                    <td style="font-weight:600;color:var(--green)">+42 pts</td>
+                                </tr>
+                                <tr>
+                                    <td>Jul 5, 2025</td>
+                                    <td>Bin C01</td>
+                                    <td><span class="type-badge type-ewaste">E-waste</span></td>
+                                    <td>0.5 kg</td>
+                                    <td style="font-weight:600;color:var(--green)">+75 pts</td>
+                                </tr>
+                                <tr>
+                                    <td>Jul 3, 2025</td>
+                                    <td>Bin D07</td>
+                                    <td><span class="type-badge type-metal">Metal</span></td>
+                                    <td>1.8 kg</td>
+                                    <td style="font-weight:600;color:var(--green)">+54 pts</td>
+                                </tr>
+                                <tr>
+                                    <td>Jun 30, 2025</td>
+                                    <td>Bin A12</td>
+                                    <td><span class="type-badge type-organic">Organic</span></td>
+                                    <td>0.9 kg</td>
+                                    <td style="font-weight:600;color:var(--green)">+18 pts</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="page" id="page-rewards">
+                    <div class="rewards-hero">
+                        <div class="rewards-hero-text">
+                            <h2>Your rewards wallet</h2>
+                            <p>Redeem points for vouchers and real-world perks</p>
+                        </div>
+                        <div>
+                            <div class="big-pts" id="reward-pts">2,840</div>
+                            <div style="color:rgba(255,255,255,0.6);font-size:13px;margin-top:4px">points available
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vouchers-grid">
+                        <div class="voucher">
+                            <div class="vicon">🛒</div>
+                            <div class="vname">BigBasket</div>
+                            <div class="vcost">500 pts</div>
+                            <div class="vsub">₹50 off groceries</div><button class="redeem-btn"
+                                onclick="redeemVoucher(500)">Redeem</button>
+                        </div>
+                        <div class="voucher">
+                            <div class="vicon">⚡</div>
+                            <div class="vname">Electricity credit</div>
+                            <div class="vcost">1000 pts</div>
+                            <div class="vsub">₹100 bill discount</div><button class="redeem-btn"
+                                onclick="redeemVoucher(1000)">Redeem</button>
+                        </div>
+                        <div class="voucher">
+                            <div class="vicon">🍕</div>
+                            <div class="vname">Swiggy</div>
+                            <div class="vcost">300 pts</div>
+                            <div class="vsub">₹30 food voucher</div><button class="redeem-btn"
+                                onclick="redeemVoucher(300)">Redeem</button>
+                        </div>
+                        <div class="voucher">
+                            <div class="vicon">🎬</div>
+                            <div class="vname">BookMyShow</div>
+                            <div class="vcost">800 pts</div>
+                            <div class="vsub">1 movie ticket</div><button class="redeem-btn"
+                                onclick="redeemVoucher(800)">Redeem</button>
+                        </div>
+                        <div class="voucher">
+                            <div class="vicon">🌿</div>
+                            <div class="vname">Plant a tree</div>
+                            <div class="vcost">200 pts</div>
+                            <div class="vsub">Sponsor reforestation</div><button class="redeem-btn"
+                                onclick="redeemVoucher(200)">Redeem</button>
+                        </div>
+                        <div class="voucher">
+                            <div class="vicon">🏪</div>
+                            <div class="vname">Amazon</div>
+                            <div class="vcost">1500 pts</div>
+                            <div class="vsub">₹150 gift card</div><button class="redeem-btn"
+                                onclick="redeemVoucher(1500)">Redeem</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page" id="page-leaderboard">
+                    <div style="margin-bottom:20px">
+                        <h2 style="font-size:22px;font-weight:700">Community leaderboard</h2>
+                        <p style="font-size:13px;color:var(--text2);margin-top:4px">Top contributors this month</p>
+                    </div>
+                    <div class="card" style="padding:0;overflow:hidden">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Name</th>
+                                    <th>Points</th>
+                                    <th>Weight</th>
+                                    <th>Streak</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-tbody">
+                                <!-- Dynamic leaderboard rows injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="page" id="page-profile">
+                    <div class="profile-header">
+                        <div class="profile-avatar">AR</div>
+                        <div class="profile-info">
+                            <h2>Alex R.</h2>
+                            <p>Member since January 2025 · Green Valley Apartments</p>
+                            <div class="profile-badge">🌿 Eco Champion — Level 4</div>
+                        </div>
+                    </div>
+                    <div class="profile-grid">
+                        <div class="profile-field"><label>Email</label>
+                            <div class="val">alex@greenvalley.com</div>
+                        </div>
+                        <div class="profile-field"><label>Phone</label>
+                            <div class="val">+91 98765 43210</div>
+                        </div>
+                        <div class="profile-field"><label>Community</label>
+                            <div class="val">Green Valley Apartments</div>
+                        </div>
+                        <div class="profile-field"><label>Member ID</label>
+                            <div class="val">GV-USR-00124</div>
+                        </div>
+                        <div class="profile-field"><label>Total points earned</label>
+                            <div class="val" style="color:var(--green);font-family:'Inter',sans-serif;font-size:20px">
+                                5,240 pts</div>
+                        </div>
+                        <div class="profile-field"><label>CO₂ saved</label>
+                            <div class="val" style="color:var(--green)">23.1 kg</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page" id="page-settings">
+                    <div style="margin-bottom:20px">
+                        <h2 style="font-size:22px;font-weight:700">Settings</h2>
+                    </div>
+                    <div class="card" style="max-width:520px">
+                        <div style="margin-bottom:20px">
+                            <h3 style="font-size:15px;font-weight:600;margin-bottom:14px">Notifications</h3>
+                            <div style="display:flex;flex-direction:column;gap:12px">
+                                <label
+                                    style="display:flex;align-items:center;justify-content:space-between;font-size:14px">Bin
+                                    collection alerts<input type="checkbox" checked style="width:auto" /></label>
+                                <label
+                                    style="display:flex;align-items:center;justify-content:space-between;font-size:14px">Points
+                                    earned notifications<input type="checkbox" checked style="width:auto" /></label>
+                                <label
+                                    style="display:flex;align-items:center;justify-content:space-between;font-size:14px">Weekly
+                                    summary email<input type="checkbox" checked style="width:auto" /></label>
+                            </div>
+                        </div>
+                        <button class="btn-primary" onclick="showToast('✅ Settings saved')">Save settings</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script>
+        let currentPoints = 0;
+        const API = 'http://127.0.0.1:5000/api';
+
+        function getAuthHeader() { return { 'Authorization': 'Bearer ' + localStorage.getItem('token') }; }
+
+        function showScreen(id) { document.querySelectorAll('.auth-screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+        let userMapInitialized = false;
+        function showPage(id, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + id).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if (el) el.classList.add('active');
+
+            if (id === 'bins' && !userMapInitialized) {
+                initUserMap();
+                userMapInitialized = true;
+            }
+            if (id === 'leaderboard') {
+                renderLeaderboard();
+            }
+        }
+        function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+
+        async function doLogin() {
+            const e = document.getElementById('login-email').value.trim(), p = document.getElementById('login-pass').value.trim();
+            const err = document.getElementById('login-error');
+            try {
+                const res = await fetch(`${API}/auth/login`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: e, password: p })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    localStorage.setItem('token', data.token);
+                    err.style.display = 'none';
+                    initDashboard();
+                } else { err.textContent = data.error || 'Login failed'; err.style.display = 'block'; }
+            } catch (e) { err.textContent = "Connection error: " + e.message; err.style.display = 'block'; }
+        }
+
+        async function doSignup() {
+            // Enhanced signup logic with random fallback to prevent duplicate email locks
+            let em = document.querySelector('#signup-screen input[type="email"]')?.value?.trim();
+            const pass = document.querySelector('#signup-screen input[type="password"]')?.value?.trim() || 'password123';
+            let name = document.querySelector('#signup-screen input[type="text"]')?.value?.trim();
+
+            // Randomize defaults to avoid SQLite UNIQUE constraint crashes during rapid testing
+            if (!em) em = `newuser${Math.floor(Math.random() * 10000)}@eco.com`;
+            if (!name) name = `EcoUser${Math.floor(Math.random() * 10000)}`;
+
+            try {
+                const res = await fetch(`${API}/auth/register`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: em, password: pass, username: name })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    showToast('🎉 Account created! Please sign in.');
+                    showScreen('login-screen');
+                } else {
+                    showToast('❌ ' + (data.error || 'Registration failed'));
+                }
+            } catch (e) { showToast('❌ Cannot connect to backend server'); }
+        }
+
+        async function initDashboard() {
+            try {
+                const res = await fetch(`${API}/users/me`, { headers: getAuthHeader() });
+                if (!res.ok) throw new Error();
+                const user = await res.json();
+                currentPoints = user.points || 0;
+
+                document.getElementById('dash-username').textContent = user.username;
+                document.getElementById('welcome-name').innerHTML = `Good morning, ${user.username}! 👋`;
+                document.getElementById('dash-avatar').textContent = user.username.substring(0, 2).toUpperCase();
+                updatePointsDisplay();
+
+                document.querySelectorAll('.auth-screen').forEach(s => s.classList.remove('active'));
+                document.getElementById('dashboard').classList.add('active');
+                document.getElementById('dashboard').style.display = 'flex';
+
+                if (!userMapInitialized) {
+                    setTimeout(() => { initUserMap(); }, 200);
+                    userMapInitialized = true;
+                }
+            } catch (e) { doLogout(); } // Token expired or invalid
+        }
+
+        function doLogout() {
+            localStorage.removeItem('token');
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('dashboard').classList.remove('active');
+            showScreen('login-screen');
+        }
+
+        let html5QrCode = null;
+
+        function startRealScanner() {
+            document.getElementById('start-scan-btn').style.display = 'none';
+            document.getElementById('cancel-scan-btn').style.display = 'inline-block';
+            document.getElementById('scanner-idle-state').style.display = 'none';
+
+            html5QrCode = new Html5Qrcode("reader");
+
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
+                .catch(err => {
+                    // Fallback to generic user camera if environment camera fails
+                    html5QrCode.start({ facingMode: "user" }, config, onScanSuccess, onScanFailure)
+                        .catch(err2 => {
+                            showToast('❌ Camera permissions denied or missing hardware');
+                            resetScannerUI();
+                        });
+                });
+        }
+
+        function stopRealScanner() {
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => { html5QrCode.clear(); }).catch(e => console.error(e));
+            }
+            document.getElementById('start-scan-btn').style.display = 'inline-block';
+            document.getElementById('cancel-scan-btn').style.display = 'none';
+            document.getElementById('scanner-idle-state').style.display = 'block';
+        }
+
+        async function onScanSuccess(decodedText, decodedResult) {
+            stopRealScanner();
+
+            try {
+                // Expecting JSON from physical QR: {"weight": 2.5, "binId": 1, "typeName": "Organic Waste"}
+                const data = JSON.parse(decodedText);
+                showToast('🔄 Processing live deposit payload to network...');
+
+                const res = await fetch(`${API}/deposits/new`, {
+                    method: 'POST', headers: { ...getAuthHeader(), 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ binId: String(data.binId || 1), weight: data.weight })
+                });
+
+                if (res.ok) {
+                    const result = await res.json();
+
+                    document.getElementById('qr-reader-container').style.display = 'none';
+                    document.getElementById('deposit-success-step').style.display = 'block';
+                    document.getElementById('success-details').textContent = `${data.weight} kg — ${data.typeName || 'General Waste'}`;
+                    document.getElementById('success-pts').textContent = result.deposit ? result.deposit.pointsEarned : Math.floor(data.weight * 10);
+
+                    currentPoints = result.newTotalPoints || currentPoints;
+                    updatePointsDisplay();
+                    renderLeaderboard();
+                } else {
+                    showToast('❌ Backend dropped the transaction request');
+                    resetScannerUI();
+                }
+            } catch (e) {
+                showToast('⚠️ Camera Error Format. Was this a valid system Bag tag?');
+                console.error(e);
+                resetScannerUI();
+            }
+        }
+
+        function onScanFailure(error) { /* Ignore constant scan read loops */ }
+
+        function resetScannerUI() {
+            document.getElementById('deposit-success-step').style.display = 'none';
+            document.getElementById('qr-reader-container').style.display = 'block';
+            document.getElementById('start-scan-btn').style.display = 'inline-block';
+            document.getElementById('cancel-scan-btn').style.display = 'none';
+            document.getElementById('scanner-idle-state').style.display = 'block';
+            document.getElementById('reader').innerHTML = '';
+        }
+
+        function updatePointsDisplay() {
+            const pts = currentPoints.toLocaleString();
+            if (document.getElementById('total-pts')) document.getElementById('total-pts').textContent = pts;
+            if (document.getElementById('reward-pts')) document.getElementById('reward-pts').textContent = pts;
+        }
+
+        function redeemVoucher(cost) {
+            if (currentPoints < cost) { showToast('❌ Not enough points'); return; }
+            currentPoints -= cost;
+            updatePointsDisplay();
+            showToast('🎁 Voucher redeemed! -' + cost + ' pts');
+        }
+
+        document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+        // Auto-login on load if token exists
+        if (localStorage.getItem('token')) { initDashboard(); }
+
+        // --- LEAFLET OPENSTREETMAP API ---
+        let userMap;
+        let userMarkers = [];
+
+        async function initUserMap() {
+            const mapContainer = document.querySelector('.bins-map-placeholder');
+            mapContainer.className = ''; // Remove mock styling
+            mapContainer.innerHTML = '<div id="osm-user-map" style="width: 100%; height: 260px; border-radius: var(--radius); margin-bottom: 24px; border: 1px solid var(--border); z-index: 1;"></div>';
+
+            userMap = L.map('osm-user-map', { zoomControl: false, attributionControl: false }).setView([17.4300, 78.4100], 12);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(userMap);
+            setTimeout(() => { userMap.invalidateSize(); }, 300);
+
+            try {
+                const res = await fetch('http://127.0.0.1:5000/api/bins');
+                const binsList = await res.json();
+
+                // Draw markers and grid
+                let gridHtml = "";
+                binsList.forEach(bin => {
+                    const color = bin.fillPercentage >= 85 ? '#ef4444' : bin.fillPercentage >= 60 ? '#f59e0b' : '#22c55e';
+                    const coords = bin.location.split(',').map(c => Number(c.trim()));
+                    const marker = L.circleMarker([coords[0], coords[1]], { radius: 8, fillColor: color, color: "#ffffff", weight: 2, opacity: 1, fillOpacity: 0.9 }).addTo(userMap);
+
+                    marker.bindTooltip(`${bin.name} (${bin.fillPercentage.toFixed(1)}% full)`);
+                    userMarkers.push(marker);
+
+                    gridHtml += `
+                    <div class="bin-card">
+                        <div class="bin-name">${bin.name}</div>
+                        <div class="bin-addr">📍 Live API Data</div>
+                        <div class="fill-bar">
+                            <div class="fill-inner" style="width:${bin.fillPercentage}%;background:${color}"></div>
+                        </div>
+                        <div class="fill-label"><span>Fill level</span><span style="color:${color};font-weight:600">${Math.round(bin.fillPercentage)}%</span></div>
+                        <div style="margin-top:10px;font-size:12px;color:var(--text2)">Max Capacity: ${bin.maxCapacity} kg</div>
+                    </div>`;
+                });
+
+                document.querySelector('.bins-grid').innerHTML = gridHtml;
+            } catch (e) { console.error('Map fetch error', e); }
+        }
+
+        async function renderLeaderboard() {
+            try {
+                const res = await fetch('http://127.0.0.1:5000/api/users/leaderboard');
+                const users = await res.json();
+                const tbody = document.getElementById('leaderboard-tbody');
+                if (!tbody) return;
+
+                const medals = ['🥇', '🥈', '🥉'];
+                let myUsername = document.getElementById('dash-username')?.textContent || '';
+
+                tbody.innerHTML = users.map((u, index) => {
+                    const rank = index + 1;
+                    const m = index < 3 ? medals[index] + ' ' : '';
+                    const rPrefix = m + rank;
+                    const isMe = u.username === myUsername;
+
+                    let rowStyle = '';
+                    if (index === 0) rowStyle = 'background:#fffbeb';
+                    else if (isMe) rowStyle = 'background:var(--green-light)';
+
+                    const nameDisplay = isMe ? `<strong>You — ${u.username}</strong>` : (index === 0 ? `<strong>${u.username}</strong>` : u.username);
+
+                    // Generating realistic mocked metrics derived directly from their real points
+                    const mockWeight = (u.points / 20).toFixed(1) + ' kg';
+                    const mockStreak = '🔥 ' + Math.max(1, Math.floor(u.points / 100)) + ' days';
+
+                    return `
+                    <tr style="${rowStyle}">
+                        <td>${index < 3 ? '<strong>' + rPrefix + '</strong>' : rPrefix}</td>
+                        <td>${nameDisplay}</td>
+                        <td style="font-weight:700;color:var(--green)">${u.points.toLocaleString()} pts</td>
+                        <td>${mockWeight}</td>
+                        <td>${mockStreak}</td>
+                    </tr>`;
+                }).join('');
+
+            } catch (e) { console.error('Leaderboard fetch error', e); }
+        }
+    </script>
+</body>
+
+</html>

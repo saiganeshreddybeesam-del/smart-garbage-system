@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>EcoReward — Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --dk: #0d1117;
+            --dk2: #161b22;
+            --dk3: #21262d;
+            --bd: #30363d;
+            --t: #e6edf3;
+            --t2: #8b949e;
+            --t3: #484f58;
+            --g: #238636;
+            --gl: #1a7a4a;
+            --gx: #2ea043;
+            --acc: #58a6ff;
+            --red: #f85149;
+            --redl: #3d1f1f;
+            --am: #e3b341;
+            --aml: #2d2616;
+            --pur: #bc8cff;
+            --r: 10px;
+            --sh: 0 4px 24px rgba(0, 0, 0, .3);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dk);
+            color: var(--t);
+            min-height: 100vh;
+        }
+
+        .ascreen {
+            display: none;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            background: var(--dk);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ascreen.on {
+            display: flex;
+        }
+
+        .aglow {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: .15;
+        }
+
+        .abox {
+            background: var(--dk2);
+            border: 1px solid var(--bd);
+            border-radius: 16px;
+            padding: 40px 36px;
+            width: 100%;
+            max-width: 400px;
+            z-index: 2;
+            box-shadow: var(--sh);
+        }
+
+        .alogo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .alogo-i {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #238636, #2ea043);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .alogo-i svg {
+            width: 18px;
+            height: 18px;
+            fill: #fff;
+        }
+
+        .alogo-n {
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--t);
+        }
+
+        .alogo-s {
+            font-size: 10px;
+            color: var(--t2);
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .atitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 5px;
+            color: var(--t);
+        }
+
+        .asub {
+            font-size: 13px;
+            color: var(--t2);
+            margin-bottom: 24px;
+        }
+
+        .fg {
+            margin-bottom: 14px;
+        }
+
+        .fg label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--t2);
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .fg input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--bd);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: var(--t);
+            background: var(--dk3);
+            transition: .2s;
+            outline: none;
+        }
+
+        .fg input:focus {
+            border-color: var(--acc);
+        }
+
+        .abtn {
+            width: 100%;
+            padding: 12px;
+            background: var(--g);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .abtn:hover {
+            background: var(--gx);
+        }
+
+        .aerr {
+            background: var(--redl);
+            color: var(--red);
+            border: 1px solid rgba(248, 81, 73, .3);
+            border-radius: 7px;
+            padding: 8px 12px;
+            font-size: 12px;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        .aswitch {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--t2);
+        }
+
+        .aswitch a {
+            color: var(--acc);
+            cursor: pointer;
+        }
+
+        .frow {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        #app {
+            display: none;
+            min-height: 100vh;
+        }
+
+        #app.on {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+        }
+
+        .sidebar {
+            background: var(--dk2);
+            border-right: 1px solid var(--bd);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .slogo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 0 18px 20px;
+        }
+
+        .slogo-i {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #238636, #2ea043);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slogo-i svg {
+            width: 15px;
+            height: 15px;
+            fill: #fff;
+        }
+
+        .slogo-n {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--t);
+        }
+
+        .slogo-s {
+            font-size: 9px;
+            color: var(--t2);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            display: block;
+        }
+
+        .snav-sec {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--t3);
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            padding: 12px 18px 6px;
+        }
+
+        .slink {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 18px;
+            font-size: 13px;
+            color: var(--t2);
+            cursor: pointer;
+            transition: .15s;
+            border-radius: 0;
+        }
+
+        .slink:hover {
+            color: var(--t);
+            background: var(--dk3);
+        }
+
+        .slink.on {
+            color: var(--t);
+            background: rgba(35, 134, 54, .15);
+            border-right: 2px solid var(--g);
+        }
+
+        .slink svg {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+        }
+
+        .sbadge {
+            margin-left: auto;
+            background: var(--red);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 8px;
+        }
+
+        .sbadge-am {
+            background: var(--am);
+            color: #000;
+        }
+
+        .smain {
+            background: var(--dk);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .topbar {
+            background: var(--dk2);
+            border-bottom: 1px solid var(--bd);
+            padding: 0 24px;
+            height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar-l {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--t);
+        }
+
+        .topbar-r {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tbadmin {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--dk3);
+            border: 1px solid var(--bd);
+            border-radius: 20px;
+            padding: 5px 12px;
+        }
+
+        .tbadmin-av {
+            width: 26px;
+            height: 26px;
+            background: linear-gradient(135deg, #238636, #58a6ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .tbadmin-name {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--t);
+        }
+
+        .lbtn {
+            background: none;
+            border: 1px solid var(--bd);
+            border-radius: 7px;
+            padding: 5px 11px;
+            font-size: 12px;
+            color: var(--t2);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .lbtn:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .cnt {
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.on {
+            display: block;
+        }
+
+        .shead {
+            margin-bottom: 18px;
+        }
+
+        .shead h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--t);
+        }
+
+        .shead p {
+            font-size: 12px;
+            color: var(--t2);
+            margin-top: 3px;
+        }
+
+        .sgrid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .sc {
+            background: var(--dk2);
+            border: 1px solid var(--bd);
+            border-radius: var(--r);
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sc-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .sc-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .sc-v {
+            font-family: 'Inter', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .sc-l {
+            font-size: 11px;
+            color: var(--t2);
+            margin-top: 3px;
+        }
+
+        .sc-ch {
+            font-size: 10px;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .card {
+            background: var(--dk2);
+            border: 1px solid var(--bd);
+            border-radius: var(--r);
+            padding: 18px;
+        }
+
+        .ctitle {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--t3);
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            margin-bottom: 12px;
+        }
+
+        .htbl {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .htbl th {
+            text-align: left;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--t3);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            padding: 7px 10px;
+            border-bottom: 1px solid var(--bd);
+        }
+
+        .htbl td {
+            padding: 10px;
+            font-size: 12px;
+            border-bottom: 1px solid rgba(48, 54, 61, .5);
+            color: var(--t);
+        }
+
+        .htbl tr:last-child td {
+            border-bottom: none;
+        }
+
+        .htbl tbody tr:hover {
+            background: var(--dk3);
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .p-green {
+            background: rgba(35, 134, 54, .2);
+            color: #2ea043;
+        }
+
+        .p-amber {
+            background: rgba(227, 179, 65, .15);
+            color: var(--am);
+        }
+
+        .p-red {
+            background: rgba(248, 81, 73, .15);
+            color: var(--red);
+        }
+
+        .p-blue {
+            background: rgba(88, 166, 255, .15);
+            color: var(--acc);
+        }
+
+        .p-gray {
+            background: var(--dk3);
+            color: var(--t2);
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid;
+        }
+
+        .alert-red {
+            background: rgba(248, 81, 73, .08);
+            border-color: rgba(248, 81, 73, .2);
+        }
+
+        .alert-am {
+            background: rgba(227, 179, 65, .08);
+            border-color: rgba(227, 179, 65, .2);
+        }
+
+        .alert-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .alert-icon-r {
+            background: rgba(248, 81, 73, .15);
+        }
+
+        .alert-icon-a {
+            background: rgba(227, 179, 65, .15);
+        }
+
+        .alert-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--t);
+        }
+
+        .alert-sub {
+            font-size: 11px;
+            color: var(--t2);
+        }
+
+        .alert-time {
+            font-size: 10px;
+            color: var(--t3);
+            margin-left: auto;
+            white-space: nowrap;
+        }
+
+        .bin-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .bin-card {
+            background: var(--dk3);
+            border: 1px solid var(--bd);
+            border-radius: 9px;
+            padding: 14px;
+        }
+
+        .bin-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .bin-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--t);
+        }
+
+        .bin-bar-wrap {
+            height: 6px;
+            background: var(--dk2);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+
+        .bin-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: .3s;
+        }
+
+        .bin-pct {
+            font-family: 'Space Mono', monospace;
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .bin-loc {
+            font-size: 11px;
+            color: var(--t2);
+        }
+
+        .bin-type {
+            font-size: 10px;
+            color: var(--t3);
+            margin-top: 2px;
+        }
+
+        .map-wrap {
+            background: rgba(13, 17, 23, .8);
+            border: 1px solid var(--bd);
+            border-radius: 10px;
+            height: 240px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .map-dots-bg {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(88, 166, 255, .07) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+
+        .map-streets {
+            position: absolute;
+            inset: 0;
+            opacity: .12;
+        }
+
+        .map-lbl {
+            position: absolute;
+            top: 10px;
+            left: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--t3);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+        .mdot {
+            position: absolute;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .mdot:hover {
+            z-index: 5;
+        }
+
+        .mdot-ring {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2.5px solid rgba(255, 255, 255, .2);
+            font-size: 13px;
+            transition: .2s;
+        }
+
+        .mdot:hover .mdot-ring {
+            transform: scale(1.25);
+        }
+
+        .mdot-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 2px;
+            color: var(--t2);
+        }
+
+        .mleg {
+            display: flex;
+            gap: 14px;
+            font-size: 11px;
+            color: var(--t2);
+        }
+
+        .ld {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 3px;
+        }
+
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .user-card {
+            background: var(--dk3);
+            border: 1px solid var(--bd);
+            border-radius: 9px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-av {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--t);
+        }
+
+        .user-detail {
+            font-size: 11px;
+            color: var(--t2);
+        }
+
+        .user-pts {
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            color: var(--g);
+            font-weight: 500;
+        }
+
+        .user-status {
+            font-size: 10px;
+            color: var(--t3);
+            margin-top: 2px;
+        }
+
+        .action-btn {
+            background: var(--dk2);
+            border: 1px solid var(--bd);
+            border-radius: 7px;
+            padding: 5px 10px;
+            font-size: 11px;
+            color: var(--t2);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .action-btn:hover {
+            border-color: var(--acc);
+            color: var(--acc);
+        }
+
+        .action-btn-red:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .rev-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .rev-card {
+            background: var(--dk2);
+            border: 1px solid var(--bd);
+            border-radius: var(--r);
+            padding: 16px;
+        }
+
+        .rev-val {
+            font-family: 'Inter', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            margin-top: 6px;
+        }
+
+        .rev-sub {
+            font-size: 11px;
+            color: var(--t2);
+        }
+
+        .rev-ch {
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 26px;
+            right: 26px;
+            background: var(--g);
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            transform: translateY(70px);
+            opacity: 0;
+            transition: .3s;
+            z-index: 999;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--bd);
+            border-radius: 7px;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            background: var(--dk3);
+            color: var(--t);
+            outline: none;
+        }
+
+        .tag-filter {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .tf {
+            padding: 4px 11px;
+            border-radius: 16px;
+            border: 1px solid var(--bd);
+            background: transparent;
+            color: var(--t2);
+            font-size: 11px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: .15s;
+        }
+
+        .tf.on {
+            background: rgba(35, 134, 54, .2);
+            border-color: var(--g);
+            color: var(--gx);
+        }
+
+        @media(max-width:900px) {
+            #app.on {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .sgrid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .bin-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .users-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .rev-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .frow {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ADMIN LOGIN -->
+    <div class="ascreen on" id="s-login">
+        <div class="aglow" style="width:500px;height:500px;background:#238636;top:-200px;right:-150px;"></div>
+        <div class="aglow" style="width:300px;height:300px;background:#58a6ff;bottom:-100px;left:-80px;"></div>
+        <div class="abox">
+            <div class="alogo">
+                <div class="alogo-i"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M17 8C8 10 5.9 16.17 3.82 19.86A1 1 0 004.7 21.3C6.77 19.5 9 19 12 19c5 0 9-4 9-9 0-2.5-1-4.5-2.7-6C16.5 4 15 2 14 0c0 5-3 7-4 8H9c-2 0-3.5 1-4.5 2.5 1.5 0 3 .5 4 1.5C9 10 12 9 17 8z" />
+                    </svg></div>
+                <div>
+                    <div class="alogo-n">EcoReward</div><span class="alogo-s">Admin Portal</span>
+                </div>
+            </div>
+            <div class="atitle">Admin Sign In</div>
+            <div class="asub">Authorized personnel only</div>
+            <div class="aerr" id="lerr">Invalid credentials. Try admin@eco.com / admin123</div>
+            <div class="fg"><label>Admin Email</label><input type="email" id="le" placeholder="admin@eco.com" /></div>
+            <div class="fg"><label>Password</label><input type="password" id="lp" placeholder="admin123" /></div>
+            <button class="abtn" onclick="doLogin()">Access Dashboard</button>
+            <div class="aswitch">New admin? <a onclick="go('s-signup')">Register here</a></div>
+        </div>
+    </div>
+
+    <!-- ADMIN SIGNUP -->
+    <div class="ascreen" id="s-signup">
+        <div class="aglow" style="width:400px;height:400px;background:#58a6ff;top:-150px;left:-100px;"></div>
+        <div class="aglow" style="width:250px;height:250px;background:#238636;bottom:-80px;right:-60px;"></div>
+        <div class="abox">
+            <div class="alogo">
+                <div class="alogo-i"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M17 8C8 10 5.9 16.17 3.82 19.86A1 1 0 004.7 21.3C6.77 19.5 9 19 12 19c5 0 9-4 9-9 0-2.5-1-4.5-2.7-6C16.5 4 15 2 14 0c0 5-3 7-4 8H9c-2 0-3.5 1-4.5 2.5 1.5 0 3 .5 4 1.5C9 10 12 9 17 8z" />
+                    </svg></div>
+                <div>
+                    <div class="alogo-n">EcoReward</div><span class="alogo-s">Admin Portal</span>
+                </div>
+            </div>
+            <div class="atitle">Register Admin</div>
+            <div class="asub">Create a new admin account for your organization</div>
+            <div class="aerr" id="serr">Please fill all fields.</div>
+            <div class="frow">
+                <div class="fg"><label>First Name</label><input type="text" id="sfn" placeholder="Rahul" /></div>
+                <div class="fg"><label>Last Name</label><input type="text" id="sln" placeholder="Gupta" /></div>
+            </div>
+            <div class="fg"><label>Work Email</label><input type="email" id="sem" placeholder="admin@eco.com" /></div>
+            <div class="fg"><label>Organization / Site</label><input type="text" id="sorg"
+                    placeholder="EcoReward Pvt Ltd" /></div>
+            <div class="frow">
+                <div class="fg"><label>Password</label><input type="password" id="sp1" placeholder="min 8 chars" />
+                </div>
+                <div class="fg"><label>Confirm</label><input type="password" id="sp2" placeholder="repeat" /></div>
+            </div>
+            <button class="abtn" onclick="doSignup()">Create Admin Account</button>
+            <div class="aswitch">Have an account? <a onclick="go('s-login')">Sign in</a></div>
+        </div>
+    </div>
+
+    <!-- ADMIN APP -->
+    <div id="app">
+        <aside class="sidebar">
+            <div class="slogo">
+                <div class="slogo-i"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M17 8C8 10 5.9 16.17 3.82 19.86A1 1 0 004.7 21.3C6.77 19.5 9 19 12 19c5 0 9-4 9-9 0-2.5-1-4.5-2.7-6C16.5 4 15 2 14 0c0 5-3 7-4 8H9c-2 0-3.5 1-4.5 2.5 1.5 0 3 .5 4 1.5C9 10 12 9 17 8z" />
+                    </svg></div>
+                <div>
+                    <div class="slogo-n">EcoReward</div><span class="slogo-s">Admin Panel</span>
+                </div>
+            </div>
+            <div class="snav-sec">Overview</div>
+            <div class="slink on" onclick="showTab('overview',this)"><svg viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                </svg>Overview</div>
+            <div class="slink" onclick="showTab('bins',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6l-1 14H6L5 6" />
+                    <path d="M10 11v6M14 11v6" />
+                    <path d="M9 6V4h6v2" />
+                </svg>Smart Bins<span class="sbadge">2</span></div>
+            <div class="slink" onclick="showTab('alerts',this)"><svg viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>Alerts<span class="sbadge sbadge-am">5</span></div>
+            <div class="snav-sec">Management</div>
+            <div class="slink" onclick="showTab('users',this)"><svg viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>Citizens</div>
+            <div class="slink" onclick="showTab('collections',this)"><svg viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <rect x="1" y="3" width="15" height="13" />
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                    <circle cx="5.5" cy="18.5" r="2.5" />
+                    <circle cx="18.5" cy="18.5" r="2.5" />
+                </svg>Collections</div>
+            <div class="snav-sec">Analytics</div>
+            <div class="slink" onclick="showTab('revenue',this)"><svg viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23" />
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>Revenue</div>
+            <div class="slink" onclick="showTab('reports',this)"><svg viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                    <polyline points="10 9 9 9 8 9" />
+                </svg>Reports</div>
+            <div style="margin-top:auto;padding:14px 18px;border-top:1px solid var(--bd);">
+                <div style="font-size:11px;color:var(--t3);">Logged in as</div>
+                <div style="font-size:12px;color:var(--t);font-weight:500;margin-top:2px;" id="admin-name-side">Admin
+                </div>
+                <button class="lbtn" style="margin-top:8px;width:100%;" onclick="logout()">Sign Out</button>
+            </div>
+        </aside>
+        <div class="smain">
+            <div class="topbar">
+                <div class="topbar-l" id="topbar-title">Overview</div>
+                <div class="topbar-r">
+                    <div style="font-size:11px;color:var(--t3);">Last updated: just now</div>
+                    <div class="tbadmin">
+                        <div class="tbadmin-av" id="tbav">A</div>
+                        <div class="tbadmin-name" id="tbname">Admin</div>
+                    </div>
+                    <button class="lbtn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+            <div class="cnt">
+
+                <!-- OVERVIEW -->
+                <div class="page on" id="pg-overview">
+                    <div class="shead">
+                        <h2>System Overview</h2>
+                        <p>Real-time snapshot of the EcoReward network</p>
+                    </div>
+                    <div class="sgrid">
+                        <div class="sc">
+                            <div class="sc-icon" style="background:rgba(35,134,54,.15);"><svg viewBox="0 0 24 24"
+                                    fill="none" stroke="#2ea043" stroke-width="2">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" />
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                                </svg></div>
+                            <div class="sc-v" style="color:#2ea043;">1,284</div>
+                            <div class="sc-l">Active Citizens</div>
+                            <div class="sc-ch" style="color:#2ea043;">↑ +48 this month</div>
+                        </div>
+                        <div class="sc">
+                            <div class="sc-icon" style="background:rgba(88,166,255,.15);"><svg viewBox="0 0 24 24"
+                                    fill="none" stroke="#58a6ff" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6" />
+                                    <path d="M19 6l-1 14H6L5 6" />
+                                    <path d="M10 11v6M14 11v6" />
+                                </svg></div>
+                            <div class="sc-v" style="color:#58a6ff;">42</div>
+                            <div class="sc-l">Smart Bins Deployed</div>
+                            <div class="sc-ch" style="color:#58a6ff;">2 need collection</div>
+                        </div>
+                        <div class="sc">
+                            <div class="sc-icon" style="background:rgba(227,179,65,.15);"><svg viewBox="0 0 24 24"
+                                    fill="none" stroke="#e3b341" stroke-width="2">
+                                    <path d="M3 3h18l-2 13H5L3 3z" />
+                                    <path d="M8 21h8M12 17v4" />
+                                </svg></div>
+                            <div class="sc-v" style="color:#e3b341;">8.4 t</div>
+                            <div class="sc-l">Waste Collected</div>
+                            <div class="sc-ch" style="color:#e3b341;">This month</div>
+                        </div>
+                        <div class="sc">
+                            <div class="sc-icon" style="background:rgba(188,140,255,.15);"><svg viewBox="0 0 24 24"
+                                    fill="none" stroke="#bc8cff" stroke-width="2">
+                                    <line x1="12" y1="1" x2="12" y2="23" />
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                </svg></div>
+                            <div class="sc-v" style="color:#bc8cff;">₹1.24L</div>
+                            <div class="sc-l">Revenue MTD</div>
+                            <div class="sc-ch" style="color:#bc8cff;">↑ +12% vs last month</div>
+                        </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:18px;margin-bottom:22px;">
+                        <div class="card">
+                            <div
+                                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                <div class="ctitle" style="margin-bottom:0;">Bin Network — Live Map</div>
+                                <button class="btn-primary"
+                                    onclick="document.getElementById('deploy-bin-modal').style.display='flex'"
+                                    style="padding:6px 12px; font-size:12px; cursor:pointer;">+ Deploy Bin</button>
+                            </div>
+                            <div class="map-wrap">
+                                <div class="map-dots-bg"></div>
+                                <div class="map-lbl">Community Network</div>
+                                <div class="mdot" style="top:32%;left:18%;" title="Block A">
+                                    <div class="mdot-ring" style="background:#22c55e;">🗑</div>
+                                    <div class="mdot-label">Block A</div>
+                                </div>
+                                <div class="mdot" style="top:15%;left:42%;" title="Block B">
+                                    <div class="mdot-ring" style="background:#22c55e;">🗑</div>
+                                    <div class="mdot-label">Block B</div>
+                                </div>
+                                <div class="mdot" style="top:50%;left:55%;" title="Block C">
+                                    <div class="mdot-ring" style="background:#f59e0b;">🗑</div>
+                                    <div class="mdot-label">Block C</div>
+                                </div>
+                                <div class="mdot" style="top:22%;left:68%;" title="Gate 2">
+                                    <div class="mdot-ring" style="background:#f59e0b;">🗑</div>
+                                    <div class="mdot-label">Gate 2</div>
+                                </div>
+                                <div class="mdot" style="top:62%;left:28%;" title="Block D">
+                                    <div class="mdot-ring" style="background:#ef4444;">🗑</div>
+                                    <div class="mdot-label">Block D</div>
+                                </div>
+                                <div class="mdot" style="top:70%;left:72%;" title="Gate 3">
+                                    <div class="mdot-ring" style="background:#ef4444;">🗑</div>
+                                    <div class="mdot-label">Gate 3</div>
+                                </div>
+                                <div class="mdot" style="top:40%;left:82%;" title="Club House">
+                                    <div class="mdot-ring" style="background:#22c55e;">🗑</div>
+                                    <div class="mdot-label">Club</div>
+                                </div>
+                            </div>
+                            <div class="mleg"><span><span class="ld"
+                                        style="background:#22c55e;"></span>Available</span><span><span class="ld"
+                                        style="background:#f59e0b;"></span>Filling (&gt;60%)</span><span><span
+                                        class="ld" style="background:#ef4444;"></span>Full (&gt;85%)</span></div>
+                        </div>
+                        <div class="card">
+                            <div class="ctitle">Active Alerts</div>
+                            <div id="alerts-preview"></div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="ctitle">Weekly Collection Volume (kg)</div><canvas id="overview-chart"
+                            height="70"></canvas>
+                    </div>
+                </div>
+
+                <!-- BINS -->
+                <div class="page" id="pg-bins">
+                    <div class="shead" style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h2>Smart Bin Management</h2>
+                            <p>Monitor all deployed bins in real time</p>
+                        </div>
+                        <button class="btn-primary"
+                            onclick="document.getElementById('deploy-bin-modal').style.display='flex'"
+                            style="padding:10px 18px; cursor:pointer;">+ Deploy New Bin</button>
+                    </div>
+                    <div style="display:flex;gap:10px;margin-bottom:16px;">
+                        <div class="tag-filter">
+                            <button class="tf on" onclick="filterBins('all',this)">All Bins</button>
+                            <button class="tf" onclick="filterBins('full',this)">Full / Near Full</button>
+                            <button class="tf" onclick="filterBins('available',this)">Available</button>
+                        </div>
+                    </div>
+                    <div class="bin-grid" id="bin-grid"></div>
+                </div>
+
+                <!-- ALERTS -->
+                <div class="page" id="pg-alerts">
+                    <div class="shead">
+                        <h2>System Alerts</h2>
+                        <p>Bins requiring immediate attention and action</p>
+                    </div>
+                    <div id="alerts-full"></div>
+                </div>
+
+                <!-- USERS -->
+                <div class="page" id="pg-users">
+                    <div class="shead">
+                        <h2>Citizen Management</h2>
+                        <p>Registered users and their activity</p>
+                    </div>
+                    <div style="margin-bottom:14px;display:flex;gap:10px;align-items:center;">
+                        <input type="text" id="user-search" placeholder="Search by name or email…"
+                            oninput="renderUsers()"
+                            style="width:100%;max-width:320px;padding:8px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--dk3);color:var(--t);font-family:'Inter',sans-serif;font-size:13px;outline:none;" />
+                        <select onchange="renderUsers()" id="user-filter" style="max-width:160px;">
+                            <option value="all">All Users</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="card" style="margin-bottom:16px;">
+                        <table class="htbl">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Community</th>
+                                    <th>Points</th>
+                                    <th>Deposits</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- COLLECTIONS -->
+                <div class="page" id="pg-collections">
+                    <div class="shead" style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h2>Collection Schedules</h2>
+                            <p>Manage waste collection routes and logs</p>
+                        </div>
+                        <button class="btn-primary" onclick="openGlobalScheduleModal()"
+                            style="padding:10px 18px; cursor:pointer;">+ Schedule Collection</button>
+                    </div>
+                    <div class="card" style="margin-bottom:18px;">
+                        <table class="htbl">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Bin Location</th>
+                                    <th>Type</th>
+                                    <th>Weight Collected</th>
+                                    <th>Driver</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="coll-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- REVENUE -->
+                <div class="page" id="pg-revenue">
+                    <div class="shead">
+                        <h2>Revenue &amp; Financials</h2>
+                        <p>Subscription income and recycling partnerships</p>
+                    </div>
+                    <div class="rev-grid">
+                        <div class="rev-card">
+                            <div class="ctitle">Monthly Revenue</div>
+                            <div class="rev-val" style="color:#2ea043;">₹1,24,500</div>
+                            <div class="rev-sub">Subscriptions + recycling</div>
+                            <div class="rev-ch" style="color:#1e722d;">↑ +12% vs Feb</div>
+                        </div>
+                        <div class="rev-card">
+                            <div class="ctitle">Subscription Income</div>
+                            <div class="rev-val" style="color:#58a6ff;">₹84,000</div>
+                            <div class="rev-sub">280 active subs × ₹300</div>
+                            <div class="rev-ch" style="color:#58a6ff;">↑ +8 new subs</div>
+                        </div>
+                        <div class="rev-card">
+                            <div class="ctitle">Recycling Partnerships</div>
+                            <div class="rev-val" style="color:#bc8cff;">₹40,500</div>
+                            <div class="rev-sub">PET, cardboard, e-waste</div>
+                            <div class="rev-ch" style="color:#bc8cff;">↑ +18% YoY</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="ctitle">Revenue Trend (Last 6 Months)</div><canvas id="rev-chart"
+                            height="80"></canvas>
+                    </div>
+                </div>
+
+                <!-- REPORTS -->
+                <div class="page" id="pg-reports">
+                    <div class="shead">
+                        <h2>Reports &amp; Exports</h2>
+                        <p>Download system data and analytics</p>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
+                        <div class="card" style="display:flex;align-items:center;gap:14px;">
+                            <div
+                                style="width:40px;height:40px;background:rgba(88,166,255,.15);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
+                                📊</div>
+                            <div style="flex:1;">
+                                <div style="font-size:13px;font-weight:600;color:var(--t);">Monthly Waste Report</div>
+                                <div style="font-size:11px;color:var(--t2);">Collection summary, waste types, bin
+                                    efficiency</div>
+                            </div>
+                            <button class="action-btn" onclick="showToast('📥 Report generating…')">Export CSV</button>
+                        </div>
+                        <div class="card" style="display:flex;align-items:center;gap:14px;">
+                            <div
+                                style="width:40px;height:40px;background:rgba(35,134,54,.15);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
+                                💰</div>
+                            <div style="flex:1;">
+                                <div style="font-size:13px;font-weight:600;color:var(--t);">Revenue Statement</div>
+                                <div style="font-size:11px;color:var(--t2);">Subscription and partnership income
+                                    breakdown</div>
+                            </div>
+                            <button class="action-btn" onclick="showToast('📥 Statement generating…')">Export
+                                PDF</button>
+                        </div>
+                        <div class="card" style="display:flex;align-items:center;gap:14px;">
+                            <div
+                                style="width:40px;height:40px;background:rgba(188,140,255,.15);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
+                                👥</div>
+                            <div style="flex:1;">
+                                <div style="font-size:13px;font-weight:600;color:var(--t);">Citizen Activity Report
+                                </div>
+                                <div style="font-size:11px;color:var(--t2);">User deposits, points, engagement metrics
+                                </div>
+                            </div>
+                            <button class="action-btn" onclick="showToast('📥 Report generating…')">Export CSV</button>
+                        </div>
+                        <div class="card" style="display:flex;align-items:center;gap:14px;">
+                            <div
+                                style="width:40px;height:40px;background:rgba(227,179,65,.15);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
+                                🗺️</div>
+                            <div style="flex:1;">
+                                <div style="font-size:13px;font-weight:600;color:var(--t);">Bin Performance Report</div>
+                                <div style="font-size:11px;color:var(--t2);">Bin utilization, alert frequency,
+                                    collection times</div>
+                            </div>
+                            <button class="action-btn" onclick="showToast('📥 Report generating…')">Export PDF</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let ca = null;
+        const admins = [{ email: 'admin@eco.com', password: 'admin123', fname: 'Rahul', lname: 'Gupta', org: 'EcoReward Pvt Ltd' }];
+        const binsData = [
+            { id: 'BIN-001', name: 'Block A', loc: 'North Entrance', type: 'General', pct: 28, status: 'ok', lastEmp: '2h ago' },
+            { id: 'BIN-002', name: 'Block B', loc: 'East Wing', type: 'Recyclable', pct: 45, status: 'ok', lastEmp: '5h ago' },
+            { id: 'BIN-003', name: 'Block C', loc: 'Garden Area', type: 'Organic', pct: 71, status: 'warn', lastEmp: '8h ago' },
+            { id: 'BIN-004', name: 'Gate 2', loc: 'Main Gate', type: 'Mixed', pct: 68, status: 'warn', lastEmp: '9h ago' },
+            { id: 'BIN-005', name: 'Block D', loc: 'South Wing', type: 'General', pct: 91, status: 'full', lastEmp: '14h ago' },
+            { id: 'BIN-006', name: 'Gate 3', loc: 'Back Gate', type: 'Recyclable', pct: 88, status: 'full', lastEmp: '12h ago' },
+            { id: 'BIN-007', name: 'Club House', loc: 'Recreation Zone', type: 'Mixed', pct: 32, status: 'ok', lastEmp: '3h ago' },
+            { id: 'BIN-008', name: 'Parking A', loc: 'Parking Level 1', type: 'General', pct: 55, status: 'warn', lastEmp: '6h ago' },
+            { id: 'BIN-009', name: 'Lobby', loc: 'Main Building', type: 'Recyclable', pct: 19, status: 'ok', lastEmp: '1h ago' },
+        ];
+        const alertsData = [
+            { level: 'red', icon: '🔴', title: 'Block D bin 91% full', sub: 'Immediate collection required — overflow risk', time: '12 min ago', bin: 'BIN-005' },
+            { level: 'red', icon: '🔴', title: 'Gate 3 bin 88% full', sub: 'High fill rate — schedule collection today', time: '28 min ago', bin: 'BIN-006' },
+            { level: 'am', icon: '🟡', title: 'Block C at 71% capacity', sub: 'Monitor — may need collection by evening', time: '1 hr ago', bin: 'BIN-003' },
+            { level: 'am', icon: '🟡', title: 'Gate 2 at 68% capacity', sub: 'Organic waste — collection recommended', time: '2 hr ago', bin: 'BIN-004' },
+            { level: 'am', icon: '🟡', title: 'Parking A at 55% capacity', sub: 'General waste accumulating faster than usual', time: '3 hr ago', bin: 'BIN-008' },
+        ];
+        const usersData = [
+            { name: 'Arjun Sharma', email: 'arjun@eco.com', community: 'Green Valley Apts', pts: 2450, deps: 23, status: 'active' },
+            { name: 'Priya Menon', email: 'priya@eco.com', community: 'Green Valley Apts', pts: 3800, deps: 41, status: 'active' },
+            { name: 'Rahul Kumar', email: 'rahul.k@eco.com', community: 'Sunrise Residency', pts: 3200, deps: 35, status: 'active' },
+            { name: 'Deepa Rao', email: 'deepa@eco.com', community: 'Green Valley Apts', pts: 2100, deps: 28, status: 'active' },
+            { name: 'Vikram Nair', email: 'vikram@eco.com', community: 'Palm Court', pts: 1800, deps: 19, status: 'active' },
+            { name: 'Sneha Iyer', email: 'sneha@eco.com', community: 'Sunrise Residency', pts: 960, deps: 11, status: 'active' },
+            { name: 'Karthik B.', email: 'karthik@eco.com', community: 'Palm Court', pts: 420, deps: 5, status: 'inactive' },
+            { name: 'Meena Pillai', email: 'meena@eco.com', community: 'Green Valley Apts', pts: 1540, deps: 17, status: 'active' },
+        ];
+        const collData = [
+            { date: '24 Mar 2026', bin: 'Block D — BIN-005', type: 'General', weight: '48.2 kg', driver: 'Suresh K.', status: 'scheduled' },
+            { date: '24 Mar 2026', bin: 'Gate 3 — BIN-006', type: 'Recyclable', weight: '39.6 kg', driver: 'Ramesh V.', status: 'scheduled' },
+            { date: '23 Mar 2026', bin: 'Block C — BIN-003', type: 'Organic', weight: '52.1 kg', driver: 'Suresh K.', status: 'completed' },
+            { date: '22 Mar 2026', bin: 'Gate 2 — BIN-004', type: 'Mixed', weight: '44.0 kg', driver: 'Anand P.', status: 'completed' },
+            { date: '21 Mar 2026', bin: 'Block A — BIN-001', type: 'General', weight: '61.3 kg', driver: 'Ramesh V.', status: 'completed' },
+            { date: '20 Mar 2026', bin: 'Block B — BIN-002', type: 'Recyclable', weight: '38.7 kg', driver: 'Suresh K.', status: 'completed' },
+            { date: '19 Mar 2026', bin: 'Club House — BIN-007', type: 'Mixed', weight: '29.5 kg', driver: 'Anand P.', status: 'completed' },
+        ];
+        function go(id) { document.querySelectorAll('.ascreen').forEach(s => s.classList.remove('on')); document.getElementById(id).classList.add('on'); document.querySelectorAll('.aerr').forEach(e => e.style.display = 'none'); }
+        function doLogin() {
+            const e = document.getElementById('le').value.trim(), p = document.getElementById('lp').value;
+            const u = admins.find(x => x.email === e && x.password === p);
+            if (!u) { document.getElementById('lerr').style.display = 'block'; return; }
+            ca = u; launchApp();
+        }
+        function doSignup() {
+            const fn = document.getElementById('sfn').value.trim(), ln = document.getElementById('sln').value.trim();
+            const em = document.getElementById('sem').value.trim(), org = document.getElementById('sorg').value.trim();
+            const p1 = document.getElementById('sp1').value, p2 = document.getElementById('sp2').value;
+            const err = document.getElementById('serr');
+            if (!fn || !em || !p1) { err.textContent = 'Please fill all required fields.'; err.style.display = 'block'; return; }
+            if (p1 !== p2) { err.textContent = 'Passwords do not match.'; err.style.display = 'block'; return; }
+            admins.push({ email: em, password: p1, fname: fn, lname: ln, org });
+            ca = { email: em, fname: fn, lname: ln, org }; launchApp();
+        }
+        function launchApp() {
+            document.querySelectorAll('.ascreen').forEach(s => s.classList.remove('on'));
+            document.getElementById('app').classList.add('on');
+            const ini = (ca.fname[0] + (ca.lname ? ca.lname[0] : '')).toUpperCase();
+            document.getElementById('tbav').textContent = ini;
+            const n = ca.fname + ' ' + (ca.lname || '');
+            document.getElementById('tbname').textContent = n;
+            document.getElementById('admin-name-side').textContent = n;
+            renderAlerts(); renderBins('all'); renderUsers(); renderColls(); renderCharts();
+        }
+        function logout() { document.getElementById('app').classList.remove('on'); go('s-login');['le', 'lp'].forEach(id => document.getElementById(id).value = ''); }
+        function showTab(name, el) {
+            document.querySelectorAll('.slink').forEach(l => l.classList.remove('on')); el.classList.add('on');
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+            document.getElementById('pg-' + name).classList.add('on');
+            const titles = { overview: 'Overview', bins: 'Smart Bins', alerts: 'Alerts', users: 'Citizens', collections: 'Collections', revenue: 'Revenue', reports: 'Reports' };
+            document.getElementById('topbar-title').textContent = titles[name] || name;
+        }
+        function renderAlerts() {
+            const shortHtml = alertsData.slice(0, 3).map(a => `<div class="alert-item ${a.level === 'red' ? 'alert-red' : 'alert-am'}"><div class="alert-icon ${a.level === 'red' ? 'alert-icon-r' : 'alert-icon-a'}">${a.icon}</div><div style="flex:1;min-width:0;"><div class="alert-title">${a.title}</div><div class="alert-sub">${a.sub}</div></div><div class="alert-time">${a.time}</div></div>`).join('');
+            const fullHtml = alertsData.map(a => `<div class="alert-item ${a.level === 'red' ? 'alert-red' : 'alert-am'}" style="margin-bottom:10px;"><div class="alert-icon ${a.level === 'red' ? 'alert-icon-r' : 'alert-icon-a'}" style="width:38px;height:38px;">${a.icon}</div><div style="flex:1;min-width:0;"><div class="alert-title">${a.title}</div><div class="alert-sub">${a.sub}</div><div style="font-size:10px;color:var(--t3);margin-top:4px;">Bin ID: ${a.bin}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;"><div class="alert-time">${a.time}</div><button class="action-btn" onclick="showToast('Collection scheduled for '+this.closest('.alert-item').querySelector('.alert-title').textContent)">Schedule Collection</button></div></div>`).join('');
+            const ap = document.getElementById('alerts-preview'); if (ap) ap.innerHTML = shortHtml;
+            const af = document.getElementById('alerts-full'); if (af) af.innerHTML = fullHtml;
+        }
+        function getBinColor(pct) { return pct >= 85 ? '#ef4444' : pct >= 60 ? '#f59e0b' : '#22c55e'; }
+        function getBinPill(s) { return s === 'full' ? 'p-red' : s === 'warn' ? 'p-amber' : 'p-green'; }
+        let mapInitialized = false;
+        async function renderBins(filter) {
+            try {
+                if (!mapInitialized) { initMap(); mapInitialized = true; }
+                const res = await fetch('http://127.0.0.1:5000/api/bins');
+                let binsList = await res.json();
+
+                // Draw map markers anytime bins are fetched
+                updateMapMarkers(binsList);
+
+                if (filter === 'full') binsList = binsList.filter(b => b.fillPercentage >= 60);
+                else if (filter === 'available') binsList = binsList.filter(b => b.fillPercentage < 60);
+
+                document.getElementById('bin-grid').innerHTML = binsList.map(b => `
+    <div class="bin-card">
+      <div class="bin-header"><div class="bin-name">${b.name}</div><span class="pill ${b.fillPercentage >= 85 ? 'p-red' : b.fillPercentage >= 60 ? 'p-amber' : 'p-green'}">${b.fillPercentage >= 85 ? 'Full' : b.fillPercentage >= 60 ? 'Filling' : 'Available'}</span></div>
+      <div class="bin-pct" style="color:${getBinColor(Math.round(b.fillPercentage))};">${Math.round(b.fillPercentage)}%</div>
+      <div class="bin-bar-wrap"><div class="bin-bar" style="width:${b.fillPercentage}%;background:${getBinColor(Math.round(b.fillPercentage))};"></div></div>
+      <div class="bin-loc">📍 Lat/Lng: ${b.location}</div>
+      <div class="bin-type">Max Capacity: ${b.maxCapacity} kg</div>
+      <div style="display:flex;gap:7px;margin-top:10px;">
+        <button class="action-btn" id="btn-disp-${b.id}" onclick="emptyBin(${b.id}, this)" style="background:${b.fillPercentage === 0 ? 'var(--border)' : 'var(--green)'};border:none;color:${b.fillPercentage === 0 ? 'var(--text2)' : '#fff'};font-weight:600;transition:0.3s;" ${b.fillPercentage === 0 ? 'disabled' : ''}>${b.fillPercentage === 0 ? 'Emptied' : 'Dispatch truck'}</button>
+        <button class="action-btn" onclick="showToast('Viewing details for ${b.name}')">Details</button>
+      </div>
+    </div>`).join('');
+            } catch (e) { console.log('API error fetching bins'); }
+        }
+        function filterBins(f, el) { document.querySelectorAll('.tf').forEach(t => t.classList.remove('on')); el.classList.add('on'); renderBins(f); }
+        async function renderUsers() {
+            try {
+                const res = await fetch('http://127.0.0.1:5000/api/users/all');
+                let list = await res.json();
+
+                const q = (document.getElementById('user-search') || {}).value || '';
+
+                list = list.filter(u => {
+                    return !q || (u.username && u.username.toLowerCase().includes(q.toLowerCase())) || u.email.toLowerCase().includes(q.toLowerCase());
+                });
+
+                document.getElementById('users-tbody').innerHTML = list.map(u => `
+    <tr>
+      <td style="font-weight:600;">${u.username}</td>
+      <td style="color:var(--t2);">${u.email}</td>
+      <td>Smart City App</td>
+      <td style="font-family:'Space Mono',monospace;color:#2ea043;">${(u.points || 0).toLocaleString()}</td>
+      <td>—</td>
+      <td><span class="pill p-green">active</span></td>
+      <td><button class="action-btn" onclick="showToast('Viewing profile: ${u.username}')">View</button></td>
+    </tr>`).join('');
+            } catch (e) { console.error('Failed to load users'); }
+        }
+        function renderColls() {
+            document.getElementById('coll-tbody').innerHTML = collData.map(c => `
+    <tr>
+      <td>${c.date}</td><td>${c.bin}</td><td>${c.type}</td><td style="font-family:'Space Mono',monospace;">${c.weight}</td><td>${c.driver}</td>
+      <td><span class="pill ${c.status === 'completed' ? 'p-green' : 'p-blue'}">${c.status}</span></td>
+    </tr>`).join('');
+        }
+        function renderCharts() {
+            const months = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
+            new Chart(document.getElementById('overview-chart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['W1 Mar', 'W2 Mar', 'W3 Mar', 'W4 Mar'], datasets: [
+                        { label: 'Recyclable', data: [1200, 1450, 1100, 1600], borderColor: '#58a6ff', backgroundColor: 'rgba(88,166,255,.08)', tension: .4, fill: true },
+                        { label: 'Organic', data: [800, 920, 1050, 880], borderColor: '#2ea043', backgroundColor: 'rgba(46,160,67,.06)', tension: .4, fill: true },
+                        { label: 'General', data: [1800, 1650, 1900, 2100], borderColor: '#e3b341', backgroundColor: 'rgba(227,179,65,.06)', tension: .4, fill: true },
+                    ]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'top', labels: { color: '#8b949e', font: { size: 11 } } } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#8b949e', font: { size: 11 } } }, x: { grid: { display: false }, ticks: { color: '#8b949e', font: { size: 11 } } } } }
+            });
+            new Chart(document.getElementById('rev-chart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: months, datasets: [
+                        { label: 'Subscriptions', data: [72000, 75000, 78000, 80000, 82000, 84000], backgroundColor: 'rgba(88,166,255,.6)', borderRadius: 5 },
+                        { label: 'Recycling', data: [28000, 30000, 31000, 34000, 36000, 40500], backgroundColor: 'rgba(46,160,67,.6)', borderRadius: 5 },
+                    ]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'top', labels: { color: '#8b949e', font: { size: 11 } } } }, scales: { x: { stacked: true, grid: { display: false }, ticks: { color: '#8b949e', font: { size: 11 } } }, y: { stacked: true, beginAtZero: true, grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#8b949e', font: { size: 11 } } } } }
+            });
+        }
+        function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+
+        // --- LEAFLET & OPENSTREETMAP INTEGRATION ---
+        let map;
+        let markers = [];
+
+        function initMap() {
+            const mapContainer = document.querySelector('.map-wrap');
+            mapContainer.innerHTML = '<div id="osm-map" style="width: 100%; height: 100%; border-radius: 10px; z-index: 1;"></div>';
+
+            // Initialize Leaflet Map
+            map = L.map('osm-map', {
+                zoomControl: false,
+                attributionControl: false
+            }).setView([17.4300, 78.4100], 12);
+
+            // Fetch free Dark Mode Map Tiles from CartoDB
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                maxZoom: 19
+            }).addTo(map);
+
+            // Revalidate size after loading into grid
+            setTimeout(() => { map.invalidateSize(); }, 300);
+
+            // Initial seed to populate bins on backend if empty
+            fetch('http://127.0.0.1:5000/api/bins/seed', { method: 'POST' }).then(() => {
+                // Seed complete
+            });
+        }
+
+        function updateMapMarkers(bins) {
+            if (!map || typeof L === 'undefined') return;
+
+            // Clear existing markers
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+
+            bins.forEach(bin => {
+                const color = bin.fillPercentage >= 85 ? '#ef4444' : bin.fillPercentage >= 60 ? '#f59e0b' : '#22c55e';
+                const coords = bin.location.split(',').map(c => Number(c.trim()));
+
+                // Create custom circular marker natively in Leaflet
+                const marker = L.circleMarker([coords[0], coords[1]], {
+                    radius: 8,
+                    fillColor: color,
+                    color: "#ffffff",
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.9
+                }).addTo(map);
+
+                // Tooltip hover
+                marker.bindTooltip(`${bin.name} (${bin.fillPercentage.toFixed(1)}% full)`);
+
+                marker.on("click", () => {
+                    showToast(`Bin selected: ${bin.name} (${bin.fillPercentage.toFixed(1)}% Full)`);
+                });
+
+                markers.push(marker);
+            });
+        }
+
+        let pendingDispatchId = null;
+        let pendingDispatchBtn = null;
+
+        function emptyBin(id, btn) {
+            pendingDispatchId = id;
+            pendingDispatchBtn = btn;
+            document.getElementById('driver-modal').style.display = 'flex';
+        }
+
+        async function confirmDriverDispatch() {
+            const driverSelect = document.getElementById('driver-select');
+            const driverName = driverSelect.options[driverSelect.selectedIndex].text;
+
+            document.getElementById('driver-modal').style.display = 'none';
+
+            if (!pendingDispatchBtn || !pendingDispatchId) return;
+
+            const btn = pendingDispatchBtn;
+            const id = pendingDispatchId;
+            const originalBg = btn.style.background;
+
+            btn.innerHTML = '🚛 Dispatching...';
+            btn.style.opacity = '0.8';
+            btn.style.pointerEvents = 'none';
+            btn.style.background = '#eab308'; // Warning color (Yellow) while en route
+
+            showToast(`Assigning ${driverName} to this route...`);
+
+            // Artificial 1.8s delay for realistic "truck driving to location" UX presentation
+            setTimeout(async () => {
+                try {
+                    const res = await fetch(`http://127.0.0.1:5000/api/bins/${id}/empty`, { method: 'POST' });
+                    if (res.ok) {
+                        btn.innerHTML = '✅ Emptied!';
+                        btn.style.background = 'var(--border)';
+                        btn.style.color = 'var(--text2)';
+                        btn.style.opacity = '1';
+
+                        // Wait a fraction of a second before re-rendering the whole map to make the pin turn green instantly
+                        setTimeout(() => renderBins('all'), 600);
+                    } else {
+                        btn.innerHTML = '❌ Failed';
+                        btn.style.background = '#ef4444'; // Red
+                        setTimeout(() => { btn.innerHTML = 'Dispatch truck'; btn.style.background = originalBg; btn.style.pointerEvents = 'auto'; }, 2000);
+                    }
+                } catch (e) {
+                    btn.innerHTML = '❌ Network Error';
+                    btn.style.background = '#ef4444';
+                    setTimeout(() => { btn.innerHTML = 'Dispatch truck'; btn.style.background = originalBg; btn.style.pointerEvents = 'auto'; }, 2000);
+                }
+            }, 1800);
+        }
+
+        async function openGlobalScheduleModal() {
+            try {
+                // Fetch dynamic bins to populate dropdown
+                const res = await fetch('http://127.0.0.1:5000/api/bins');
+                const bins = await res.json();
+                const binSelect = document.getElementById('global-bin-select');
+                binSelect.innerHTML = bins.map(b => `<option value="${b.id}">${b.name} (${b.fillPercentage.toFixed(1)}% full)</option>`).join('');
+
+                document.getElementById('global-schedule-modal').style.display = 'flex';
+            } catch (e) {
+                showToast('❌ Backend offline. Turn on server.js');
+            }
+        }
+
+        function confirmGlobalSchedule() {
+            document.getElementById('global-schedule-modal').style.display = 'none';
+            const driverName = document.getElementById('global-driver-select').value;
+            const binSelect = document.getElementById('global-bin-select');
+            const binText = binSelect.options[binSelect.selectedIndex].text;
+
+            showToast(`✅ Scheduled ${driverName} to collect from ${binText}!`);
+        }
+
+        async function submitNewBin() {
+            const name = document.getElementById('deploy-name').value.trim();
+            const lat = document.getElementById('deploy-lat').value.trim();
+            const lng = document.getElementById('deploy-lng').value.trim();
+            const cap = document.getElementById('deploy-cap').value.trim();
+
+            if (!name || !lat || !lng || !cap) {
+                showToast('⚠️ Please fill in all deployment fields');
+                return;
+            }
+            if (isNaN(parseFloat(lat)) || isNaN(parseFloat(lng))) {
+                showToast('⚠️ Coordinates must be numeric decimal values');
+                return;
+            }
+
+            const btn = document.querySelector('#deploy-bin-modal .p-green');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Deploying...';
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+
+            try {
+                const res = await fetch('http://127.0.0.1:5000/api/bins/new', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, location: `${lat}, ${lng}`, maxCapacity: cap })
+                });
+                if (res.ok) {
+                    showToast(`✅ Successfully deployed ${name} to network!`);
+                    document.getElementById('deploy-bin-modal').style.display = 'none';
+                    document.getElementById('deploy-name').value = '';
+                    document.getElementById('deploy-lat').value = '';
+                    document.getElementById('deploy-lng').value = '';
+
+                    // INSTANTLY redraw map with new pin
+                    renderBins('all');
+                } else {
+                    showToast('❌ Deployment failed on server');
+                }
+            } catch (e) {
+                showToast('❌ Network error during deployment');
+            }
+
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        }
+    </script>
+
+    <!-- Deploy Bin Modal -->
+    <div id="deploy-bin-modal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
+        <div class="card" style="width: 450px; background:var(--bg2); border:1px solid var(--border);">
+            <h3>Deploy Smart Bin</h3>
+            <p style="color:var(--text2); font-size:13px; margin: 10px 0 20px;">Deploy a new physical IoT dustbin to the
+                operational network map.</p>
+
+            <div class="form-group">
+                <label>Bin Name / Location Tag</label>
+                <input type="text" id="deploy-name" placeholder="e.g. Bin X01 - Main Square"
+                    style="width:100%; padding:10px; background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:var(--radius-sm); font-size:14px;" />
+            </div>
+            <div style="display:flex; gap:10px; margin-bottom:16px;">
+                <div class="form-group" style="flex:1; margin:0;">
+                    <label>Latitude</label>
+                    <input type="text" id="deploy-lat" placeholder="17.4355"
+                        style="width:100%; padding:10px; background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:var(--radius-sm); font-size:14px;" />
+                </div>
+                <div class="form-group" style="flex:1; margin:0;">
+                    <label>Longitude</label>
+                    <input type="text" id="deploy-lng" placeholder="78.4231"
+                        style="width:100%; padding:10px; background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:var(--radius-sm); font-size:14px;" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Max Hardware Capacity (kg)</label>
+                <input type="number" id="deploy-cap" value="100"
+                    style="width:100%; padding:10px; background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:var(--radius-sm); font-size:14px;" />
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:24px;">
+                <button class="action-btn" style="flex:1"
+                    onclick="document.getElementById('deploy-bin-modal').style.display='none'">Cancel</button>
+                <button class="action-btn p-green"
+                    style="flex:1; background:var(--green); color:#fff; border:none; transition:0.2s;"
+                    onclick="submitNewBin()">Deploy Bin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Schedule Modal -->
+    <div id="global-schedule-modal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
+        <div class="card" style="width: 450px; background:var(--bg2); border:1px solid var(--border);">
+            <h3>Schedule Fleet Collection</h3>
+            <p style="color:var(--text2); font-size:13px; margin: 10px 0 20px;">Assign a truck driver to a specific
+                smart bin route.</p>
+
+            <div class="form-group">
+                <label>Select Target Bin</label>
+                <select id="global-bin-select"
+                    style="width:100%; padding:12px; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:var(--radius-sm); font-size:14px; cursor:pointer;">
+                    <option>Loading bins...</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-top:16px;">
+                <label>Assign Driver</label>
+                <select id="global-driver-select"
+                    style="width:100%; padding:12px; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:var(--radius-sm); font-size:14px; cursor:pointer;">
+                    <option value="Ravi Kumar (TS-09-1234)">🟢 Ravi Kumar (Truck TS-09-1234)</option>
+                    <option value="Srinivas M. (TS-09-5562)">🟢 Srinivas M. (Truck TS-09-5562)</option>
+                    <option value="Abdul Rahman (TS-09-8810)">🟡 Abdul Rahman (Truck TS-09-8810) - Busy</option>
+                    <option value="Venkat Reddy (TS-09-4001)">🟢 Venkat Reddy (Truck TS-09-4001)</option>
+                </select>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:24px;">
+                <button class="action-btn" style="flex:1"
+                    onclick="document.getElementById('global-schedule-modal').style.display='none'">Cancel</button>
+                <button class="action-btn p-green"
+                    style="flex:1; background:var(--green); color:#fff; border:none; transition:0.2s;"
+                    onclick="confirmGlobalSchedule()">Confirm Schedule</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Driver Assignment Modal -->
+    <div id="driver-modal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
+        <div class="card" style="width: 400px; background:var(--bg2); border:1px solid var(--border);">
+            <h3>Assign Driver Route</h3>
+            <p style="color:var(--text2); font-size:13px; margin: 10px 0 20px;">Select an available fleet driver to
+                dispatch for this bin collection.</p>
+
+            <div class="form-group">
+                <label>Available Drivers</label>
+                <select id="driver-select"
+                    style="width:100%; padding:12px; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:var(--radius-sm); font-size:14px; cursor:pointer;">
+                    <option value="driver1">🟢 Ravi Kumar (Truck TS-09-1234)</option>
+                    <option value="driver2">🟢 Srinivas M. (Truck TS-09-5562)</option>
+                    <option value="driver3">🟡 Abdul Rahman (Truck TS-09-8810) - Busy in 10 mins</option>
+                    <option value="driver4">🟢 Venkat Reddy (Truck TS-09-4001)</option>
+                </select>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:24px;">
+                <button class="action-btn" style="flex:1"
+                    onclick="document.getElementById('driver-modal').style.display='none'">Cancel</button>
+                <button class="action-btn p-green"
+                    style="flex:1; background:var(--green); color:#fff; border:none; transition:0.2s;"
+                    onclick="confirmDriverDispatch()">Confirm Dispatch</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
